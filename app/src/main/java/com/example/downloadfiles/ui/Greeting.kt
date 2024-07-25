@@ -42,7 +42,7 @@ fun Greeting(modifier: Modifier = Modifier) {
                     //   "https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     "https://server6.mp3quran.net/thubti/001.mp3",
 
-                    "sadsadd",
+                    "saadsadd",
                     {
                         progressValue = it
                     },

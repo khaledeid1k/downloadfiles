@@ -9,6 +9,5 @@ import retrofit2.http.Url
 
 interface FileService {
     @GET
-    @Streaming
    suspend fun downloadFile(@Url fileUrl: String):ResponseBody
 }
