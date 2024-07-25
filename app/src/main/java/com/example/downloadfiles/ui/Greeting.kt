@@ -39,9 +39,10 @@ fun Greeting(modifier: Modifier = Modifier) {
         Button(
             onClick = {
                 downloadFileR(
-                    //  https://server6.mp3quran.net/thubti/001.mp3
-                    "https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                    "sad",
+                    //   "https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    "https://server6.mp3quran.net/thubti/001.mp3",
+
+                    "sadsadd",
                     {
                         progressValue = it
                     },
