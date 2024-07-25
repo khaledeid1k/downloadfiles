@@ -1,4 +1,4 @@
-package com.example.downloadfiles.ui
+package com.example.downloadfiles
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel

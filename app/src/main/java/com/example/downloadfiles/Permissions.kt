@@ -1,10 +1,11 @@
-package com.example.downloadfiles.ui
+package com.example.downloadfiles
 
 import android.Manifest
 import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.core.app.ActivityCompat
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun  CheckPermissions(activity: Activity){
@@ -18,7 +19,7 @@ fun  CheckPermissions(activity: Activity){
                     Manifest.permission.CAMERA -> {
                         CameraPermissionTextProvider()
                     }
-                    android.Manifest.permission.READ_CONTACTS -> {
+                    Manifest.permission.READ_CONTACTS -> {
                         RecordAudioPermissionTextProvider()
                     }
                     else -> return@forEach
@@ -30,9 +31,7 @@ fun  CheckPermissions(activity: Activity){
                 onDismiss = viewModel::dismissDialog,
                 onOkClick = {
                     viewModel.dismissDialog()
-                    multiplePermissionResultLauncher.launch(
-                        arrayOf(permission)
-                    )
+
                 },
                 onGoToAppSettingsClick ={}
             )
