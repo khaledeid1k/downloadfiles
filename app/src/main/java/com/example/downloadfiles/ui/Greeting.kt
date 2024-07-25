@@ -25,38 +25,45 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.downloadfiles.R
 import com.example.downloadfiles.downloadFile
+import com.example.downloadfiles.network.downloadFileR
+
 @Preview(showBackground = true)
 @Composable
-fun Greeting( modifier: Modifier = Modifier) {
+fun Greeting(modifier: Modifier = Modifier) {
     var progressValue by remember { mutableIntStateOf(0) }
     var completed by remember { mutableIntStateOf(0) }
-    Column (modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
-        Alignment.CenterHorizontally){
+    Column(
+        modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
+        Alignment.CenterHorizontally
+    ) {
         Button(
             onClick = {
-                downloadFile(
-
-                    "https://server6.mp3quran.net/thubti/001.mp3","sad",{
-                    progressValue=it
-                },{
-                    completed=it
-                })
+                downloadFileR(
+                    //  https://server6.mp3quran.net/thubti/001.mp3
+                    "https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+                    "sad",
+                    {
+                        progressValue = it
+                    },
+                    {
+                        completed = it
+                    })
             },
             modifier = modifier
-        ){
+        ) {
             Text(text = "Download")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        if(completed>0) {
+        if (completed > 0) {
             Image(
                 modifier = Modifier.size(100.dp),
                 painter = painterResource(id = R.drawable.done),
                 contentDescription = ""
             )
-        }else {
+        } else {
             Box {
                 CircularProgressIndicator(
-                    trackColor=androidx.compose.ui.graphics.Color.Red,
+                    trackColor = androidx.compose.ui.graphics.Color.Red,
                     progress = progressValue.toFloat(),
                     modifier = Modifier.size(100.dp)
                 )
