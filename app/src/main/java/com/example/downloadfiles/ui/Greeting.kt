@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.R
@@ -43,7 +44,7 @@ import kotlinx.coroutines.flow.drop
 @Preview(showBackground = true)
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
-    val  baseViewModel: BaseViewModel = viewModel()
+    val  baseViewModel: BaseViewModel = hiltViewModel()
     var progressValue by remember { mutableIntStateOf(0) }
 
     LaunchedEffect (key1 = Unit) {
