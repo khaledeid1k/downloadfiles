@@ -37,13 +37,14 @@ fun createNotificationChannel(context: Context, textTitle: String) {
     notificationManager.notify(NOTIFICATION_ID, builder.build())
 }
 
-fun updateNotificationProgress(context: Context, progress: Int) {
+fun updateNotificationProgress( progress: Int) {
         builder.setProgress(100, progress, false)
     notificationManager.notify(NOTIFICATION_ID, builder.build())
 }
 
-fun completeNotification(context: Context) {
-        builder.setContentTitle("Download Complete")
+fun completeNotification() {
+        builder
+            .setContentTitle("Download Complete")
             .setContentText("The file has been downloaded successfully.")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setProgress(0, 0, false)
