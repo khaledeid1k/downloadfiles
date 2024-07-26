@@ -44,7 +44,6 @@ fun updateNotificationProgress(context: Context, progress: Int) {
             .setContentText("Downloading file...")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setProgress(100, progress, false)
-            .setShowWhen(true)
     notificationManager.notify(NOTIFICATION_ID, builder.build())
 }
 

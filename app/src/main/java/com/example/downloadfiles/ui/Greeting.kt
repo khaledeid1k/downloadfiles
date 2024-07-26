@@ -38,6 +38,7 @@ import com.example.downloadfiles.initNotificationManager
 import com.example.downloadfiles.network.downloadFileR
 import com.example.downloadfiles.updateNotificationProgress
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.drop
 
 @Preview(showBackground = true)
 @Composable
@@ -55,6 +56,8 @@ fun Greeting(modifier: Modifier = Modifier) {
     val  context= LocalContext.current
     initNotificationManager(context)
     initNotificationChannel()
+    if(progressValue>0) {
+    updateNotificationProgress(context,progressValue)}
     Column(
         modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
         Alignment.CenterHorizontally
@@ -67,22 +70,17 @@ fun Greeting(modifier: Modifier = Modifier) {
                     "https://server8.mp3quran.net/harthi/061.mp3",
                   //  "https://server8.mp3quran.net/harthi/001.mp3",
 
-                    "asdasdaasdsdsasads",
+                    "sadsafdsf8",
                     baseViewModel
 
                 ) {
+                    completeNotification(context)
                     completed = it
                 }
             },
             modifier = modifier
         ) {
 
-            updateNotificationProgress(context,progressValue)
-
-
-            if(completed>0) {
-                completeNotification(context)
-            }
             Text(text = "Download")
         }
         Spacer(modifier = Modifier.height(16.dp))
