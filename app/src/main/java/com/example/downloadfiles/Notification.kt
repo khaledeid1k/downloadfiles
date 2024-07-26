@@ -38,23 +38,15 @@ fun createNotificationChannel(context: Context, textTitle: String) {
 }
 
 fun updateNotificationProgress(context: Context, progress: Int) {
-        builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.circle_notifications)
-            .setContentTitle("Downloading")
-            .setContentText("Downloading file...")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setProgress(100, progress, false)
+        builder.setProgress(100, progress, false)
     notificationManager.notify(NOTIFICATION_ID, builder.build())
 }
 
 fun completeNotification(context: Context) {
-        builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.circle_notifications)
-            .setContentTitle("Download Complete")
+        builder.setContentTitle("Download Complete")
             .setContentText("The file has been downloaded successfully.")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setProgress(0, 0, false)
-            .setShowWhen(true)
 
     notificationManager.notify(NOTIFICATION_ID, builder.build())
 }
