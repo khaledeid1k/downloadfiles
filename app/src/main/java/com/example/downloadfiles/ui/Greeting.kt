@@ -13,6 +13,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -25,6 +27,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.R
 import com.example.downloadfiles.completeNotification
 import com.example.downloadfiles.createNotificationChannel
@@ -33,11 +37,20 @@ import com.example.downloadfiles.initNotificationChannel
 import com.example.downloadfiles.initNotificationManager
 import com.example.downloadfiles.network.downloadFileR
 import com.example.downloadfiles.updateNotificationProgress
+import kotlinx.coroutines.flow.collectLatest
 
 @Preview(showBackground = true)
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
+    val  baseViewModel: BaseViewModel = viewModel()
     var progressValue by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect (key1 = Unit) {
+         baseViewModel.updateNotificationProcess.collectLatest {
+            progressValue=it
+        }
+    }
+
     var completed by remember { mutableIntStateOf(0) }
     val  context= LocalContext.current
     initNotificationManager(context)
@@ -48,25 +61,28 @@ fun Greeting(modifier: Modifier = Modifier) {
     ) {
         Button(
             onClick = {
-                createNotificationChannel(context,"sasssssdsss")
+                createNotificationChannel(context,"sdsada")
                 downloadFileR(
                     //   "https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     "https://server8.mp3quran.net/harthi/061.mp3",
-              //      "https://server8.mp3quran.net/harthi/001.mp3",
+                  //  "https://server8.mp3quran.net/harthi/001.mp3",
 
-                    "ssasdasss",
-                    {
-                    //   updateNotificationProgress(context,it)
-                        progressValue = it
-                    },
-                    {
+                    "asdasdaasdsdsasads",
+                    baseViewModel
 
-                     completeNotification(context)
-                        completed = it
-                    })
+                ) {
+                    completed = it
+                }
             },
             modifier = modifier
         ) {
+
+            updateNotificationProgress(context,progressValue)
+
+
+            if(completed>0) {
+                completeNotification(context)
+            }
             Text(text = "Download")
         }
         Spacer(modifier = Modifier.height(16.dp))

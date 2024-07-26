@@ -2,16 +2,19 @@ package com.example.downloadfiles.network
 
 import android.os.Environment
 import android.util.Log
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.downloadfiles.BaseViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
 @OptIn(DelicateCoroutinesApi::class)
-fun downloadFileR(url: String, hadithBookName: String, progressOfDownload: (Int) -> Unit, completedDownload: (Int) -> Unit) {
+fun downloadFileR(url: String, hadithBookName: String, baseViewModel: BaseViewModel,completedDownload: (Int) -> Unit) {
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val response = RetrofitClient.service.downloadFile(url)
@@ -31,7 +34,7 @@ fun downloadFileR(url: String, hadithBookName: String, progressOfDownload: (Int)
                 while (inputStream.read(buffer).also { bytes = it } != -1) {
                     byteCopied += bytes
                     val progress = (byteCopied.toFloat() / fileSize * 100).toInt()
-                    progressOfDownload(progress)
+                    baseViewModel.updateNotificationProcess.update { progress }
 
                     outputStream.write(buffer, 0, bytes)
                     if (progress == 100) {
