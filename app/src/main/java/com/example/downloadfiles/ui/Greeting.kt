@@ -43,32 +43,32 @@ import kotlinx.coroutines.flow.drop
 @Preview(showBackground = true)
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
-    val  baseViewModel: BaseViewModel = viewModel()
-    var progressValue by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect (key1 = Unit) {
-         baseViewModel.updateNotificationProcess.collectLatest {
-            progressValue=it
+    val baseViewModel: BaseViewModel = viewModel()
+    val progressValue by remember { mutableIntStateOf(0) }
+    var completed by remember { mutableIntStateOf(0) }
+    val context = LocalContext.current
+    LaunchedEffect(key1 = baseViewModel.updateNotificationProcess) {
+        if (progressValue > 0) {
+            updateNotificationProgress(context, progressValue)
         }
+
     }
 
-    var completed by remember { mutableIntStateOf(0) }
-    val  context= LocalContext.current
+
     initNotificationManager(context)
     initNotificationChannel()
-    if(progressValue>0) {
-    updateNotificationProgress(context,progressValue)}
+
     Column(
         modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
         Alignment.CenterHorizontally
     ) {
         Button(
             onClick = {
-                createNotificationChannel(context,"sdsada")
+                createNotificationChannel(context, "sdsadadaada")
                 downloadFileR(
                     //   "https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                     "https://server8.mp3quran.net/harthi/061.mp3",
-                  //  "https://server8.mp3quran.net/harthi/001.mp3",
+                    //  "https://server8.mp3quran.net/harthi/001.mp3",
 
                     "asdasdadsasdadsdsaads",
                     baseViewModel
