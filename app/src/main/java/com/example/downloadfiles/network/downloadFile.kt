@@ -32,6 +32,7 @@ fun downloadFileR(url: String, hadithBookName: String, progressOfDownload: (Int)
                     byteCopied += bytes
                     val progress = (byteCopied.toFloat() / fileSize * 100).toInt()
                     progressOfDownload(progress)
+
                     outputStream.write(buffer, 0, bytes)
                     if (progress == 100) {
                         completedDownload(progress)
