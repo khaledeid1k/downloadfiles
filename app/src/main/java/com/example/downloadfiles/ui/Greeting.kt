@@ -45,13 +45,12 @@ import kotlinx.coroutines.flow.drop
 fun Greeting(modifier: Modifier = Modifier) {
     val baseViewModel: BaseViewModel = viewModel()
     val progressValue by remember { mutableIntStateOf(0) }
-    var completed by remember { mutableIntStateOf(0) }
+    val progressState by baseViewModel.updateNotificationProcess.collectAsState()
     val context = LocalContext.current
-    LaunchedEffect(key1 = baseViewModel.updateNotificationProcess) {
-        if (progressValue > 0) {
+    LaunchedEffect(progressState) {
+        if (progressState > 0) {
             updateNotificationProgress(context, progressValue)
         }
-
     }
 
 
@@ -65,18 +64,7 @@ fun Greeting(modifier: Modifier = Modifier) {
         Button(
             onClick = {
                 createNotificationChannel(context, "sdsadadaada")
-                downloadFileR(
-                    //   "https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                    "https://server8.mp3quran.net/harthi/061.mp3",
-                    //  "https://server8.mp3quran.net/harthi/001.mp3",
-
-                    "asdasdadsasdadsdsaads",
-                    baseViewModel
-
-                ) {
-                    completeNotification(context)
-                    completed = it
-                }
+                baseViewModel.download()
             },
             modifier = modifier
         ) {
@@ -84,7 +72,7 @@ fun Greeting(modifier: Modifier = Modifier) {
             Text(text = "Download")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        if (completed > 0) {
+        if (progressState > 0) {
             Image(
                 modifier = Modifier.size(100.dp),
                 painter = painterResource(id = R.drawable.done),

@@ -14,7 +14,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 
 @OptIn(DelicateCoroutinesApi::class)
-fun downloadFileR(url: String, hadithBookName: String, baseViewModel: BaseViewModel,completedDownload: (Int) -> Unit) {
+fun downloadFileR(url: String, hadithBookName: String,onProgressCallBack: (Int) -> Unit) {
     GlobalScope.launch(Dispatchers.IO) {
         try {
             val response = RetrofitClient.service.downloadFile(url)
@@ -34,13 +34,10 @@ fun downloadFileR(url: String, hadithBookName: String, baseViewModel: BaseViewMo
                 while (inputStream.read(buffer).also { bytes = it } != -1) {
                     byteCopied += bytes
                     val progress = (byteCopied.toFloat() / fileSize * 100).toInt()
-                    baseViewModel.updateNotificationProcess.update { progress }
+                    //baseViewModel.updateNotificationProcess.update { progress }
 
                     outputStream.write(buffer, 0, bytes)
-                    if (progress == 100) {
-                        completedDownload(progress)
-                        break
-                    }
+                    onProgressCallBack(progress)
                 }
 
                 outputStream.close()
