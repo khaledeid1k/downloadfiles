@@ -16,9 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -28,37 +26,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.R
-import com.example.downloadfiles.completeNotification
 import com.example.downloadfiles.createNotificationChannel
-import com.example.downloadfiles.downloadFile
-import com.example.downloadfiles.initNotificationChannel
-import com.example.downloadfiles.initNotificationManager
 import com.example.downloadfiles.network.downloadFileR
 import com.example.downloadfiles.updateNotificationProgress
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.drop
 
 @Preview(showBackground = true)
 @Composable
 fun Greeting(modifier: Modifier = Modifier) {
-    val  baseViewModel: BaseViewModel = viewModel()
-    var progressValue by remember { mutableIntStateOf(0) }
+    val baseViewModel: BaseViewModel = hiltViewModel()
+    val updateNotificationProcess = baseViewModel.updateNotificationProcess.collectAsState()
     var completed by remember { mutableIntStateOf(0) }
-    val  context= LocalContext.current
-    LaunchedEffect (key1 = Unit) {
-         baseViewModel.updateNotificationProcess.collectLatest {
-             if(it>0) {
-                 progressValue=it
-                 updateNotificationProgress(    it)}
+    val context = LocalContext.current
+    LaunchedEffect(updateNotificationProcess.value) {
+        updateNotificationProcess.value.apply {
+            if (this > 0) {
+                updateNotificationProgress(this)
+            }
         }
     }
 
 
-    initNotificationManager(context)
-    initNotificationChannel()
+
+
+
 
     Column(
         modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
@@ -66,17 +58,18 @@ fun Greeting(modifier: Modifier = Modifier) {
     ) {
         Button(
             onClick = {
-                createNotificationChannel(context,"sdsada")
+                createNotificationChannel(context, "sdssadsdasdasada")
                 downloadFileR(
                     //   "https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                    "https://server8.mp3quran.net/harthi/061.mp3",
-                  //  "https://server8.mp3quran.net/harthi/001.mp3",
+                    "https://server8.mp3quran.net/harthi/014.mp3",
+                 //   "https://server8.mp3quran.net/harthi/061.mp3",
+                    //  "https://server8.mp3quran.net/harthi/001.mp3",
 
-                    "asdasdasdasd",
+                    "ddddss5255sssssadasdddddddddss33",
                     baseViewModel
 
                 ) {
-                    completeNotification()
+                    // completeNotification()
                     completed = it
                 }
             },
@@ -96,10 +89,13 @@ fun Greeting(modifier: Modifier = Modifier) {
             Box {
                 CircularProgressIndicator(
                     trackColor = androidx.compose.ui.graphics.Color.Red,
-                    progress = progressValue.toFloat(),
+                    progress = updateNotificationProcess.value.toFloat(),
                     modifier = Modifier.size(100.dp)
                 )
-                Text(text = progressValue.toString(), modifier = Modifier.align(Alignment.Center))
+                Text(
+                    text = updateNotificationProcess.value.toString(),
+                    modifier = Modifier.align(Alignment.Center)
+                )
             }
         }
 

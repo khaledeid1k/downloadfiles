@@ -39,16 +39,9 @@ fun createNotificationChannel(context: Context, textTitle: String) {
 
 fun updateNotificationProgress( progress: Int) {
         builder.setProgress(100, progress, false)
-    notificationManager.notify(NOTIFICATION_ID, builder.build())
-}
-
-fun completeNotification() {
-        builder
-            .setContentTitle("Download Complete")
-            .setContentText("The file has been downloaded successfully.")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setProgress(0, 0, false)
-
+            .also {
+            if(progress == 100){builder.setContentTitle("Download Complete")}
+        }
     notificationManager.notify(NOTIFICATION_ID, builder.build())
 }
 
