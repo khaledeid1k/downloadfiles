@@ -12,7 +12,6 @@ import com.example.downloadfiles.CheckPermissions
 import com.example.downloadfiles.initNotificationChannel
 import com.example.downloadfiles.initNotificationManager
 import com.example.downloadfiles.ui.theme.DownloadfilesTheme
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

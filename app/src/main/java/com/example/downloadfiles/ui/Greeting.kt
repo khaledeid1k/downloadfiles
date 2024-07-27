@@ -1,5 +1,6 @@
 package com.example.downloadfiles.ui
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -29,8 +30,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.R
 import com.example.downloadfiles.createNotificationChannel
-import com.example.downloadfiles.network.downloadFileR
 import com.example.downloadfiles.updateNotificationProgress
+import com.example.service.DownloadService
 
 @Preview(showBackground = true)
 @Composable
@@ -40,38 +41,21 @@ fun Greeting(modifier: Modifier = Modifier) {
     var completed by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
     LaunchedEffect(updateNotificationProcess.value) {
+        Log.d("TAG", "Greeting:${updateNotificationProcess.value} ")
         updateNotificationProcess.value.apply {
             if (this > 0) {
                 updateNotificationProgress(this)
             }
         }
     }
-
-
-
-
-
-
     Column(
         modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
         Alignment.CenterHorizontally
     ) {
         Button(
             onClick = {
-                createNotificationChannel(context, "sdssadsdasdasada")
-                downloadFileR(
-                    //   "https://images.pexels.com/photos/35537/child-children-girl-happy.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-                    "https://server8.mp3quran.net/harthi/014.mp3",
-                 //   "https://server8.mp3quran.net/harthi/061.mp3",
-                    //  "https://server8.mp3quran.net/harthi/001.mp3",
-
-                    "ddddss5255sssssadasdddddddddss33",
-                    baseViewModel
-
-                ) {
-                    // completeNotification()
-                    completed = it
-                }
+                val intent = Intent(context, DownloadService::class.java)
+                context.startService(intent)
             },
             modifier = modifier
         ) {

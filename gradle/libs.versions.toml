@@ -1,4 +1,5 @@
 [versions]
+activityKtx = "1.4.0"
 agp = "8.4.2"
 kotlin = "1.9.0"
 hiltNavigationCompose = "1.1.0"
@@ -7,6 +8,7 @@ junit = "4.13.2"
 lifecycle-runtime-ktx = "2.6.2"
 activity-compose = "1.8.2"
 compose-bom = "2023.10.01"
+lifecycleViewmodelKtx = "2.4.1"
 viewModel="2.6.2"
 viewModelLife="2.2.0"
 viewModelEx="2.2.0"
@@ -21,7 +23,9 @@ gson = "2.10.1"
 coroutine = "1.7.3"
 
 [libraries]
+androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-lifecycle-viewmodel-ktx-v241 = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }

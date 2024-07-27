@@ -76,5 +76,6 @@ dependencies {
     ksp(libs.hilt.android.compiler)
     implementation(libs.gson)
     implementation(libs.converter.gson)
-
+    implementation (libs.androidx.activity.ktx)
+    implementation (libs.androidx.lifecycle.viewmodel.ktx.v241)
 }
