@@ -8,7 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.CheckPermissions
+import com.example.downloadfiles.SharedDataHolder
 import com.example.downloadfiles.initNotificationChannel
 import com.example.downloadfiles.initNotificationManager
 import com.example.downloadfiles.ui.theme.DownloadfilesTheme
@@ -21,11 +24,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         initNotificationManager(this)
         initNotificationChannel()
+
         setContent {
             DownloadfilesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    val baseViewModel: BaseViewModel = hiltViewModel()
+                    SharedDataHolder.baseViewModel = baseViewModel
+
                     CheckPermissions(this)
-                    Greeting(modifier = Modifier.padding(innerPadding))
+                    Greeting(modifier = Modifier.padding(innerPadding),baseViewModel)
                 }
             }
         }

@@ -14,9 +14,8 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import javax.inject.Inject
 
-class DownloadFileR{
-    @Inject
-    lateinit var baseViewModel: BaseViewModel
+class DownloadFileR(private val baseViewModel: BaseViewModel){
+    @OptIn(DelicateCoroutinesApi::class)
     fun downloadFile(completedDownload: (Int) -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -27,7 +26,7 @@ class DownloadFileR{
                     val inputStream: InputStream = responseBody.byteStream()
                     val file = File(
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                        "adadasdasdddddddddddd.mp3"
+                        "asd1546315.mp3"
                     )
                     val outputStream = FileOutputStream(file)
 

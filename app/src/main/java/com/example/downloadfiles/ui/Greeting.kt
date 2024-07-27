@@ -33,21 +33,11 @@ import com.example.downloadfiles.createNotificationChannel
 import com.example.downloadfiles.updateNotificationProgress
 import com.example.service.DownloadService
 
-@Preview(showBackground = true)
+
 @Composable
-fun Greeting(modifier: Modifier = Modifier) {
-    val baseViewModel: BaseViewModel = hiltViewModel()
+fun Greeting(modifier: Modifier = Modifier,baseViewModel: BaseViewModel) {
     val updateNotificationProcess = baseViewModel.updateNotificationProcess.collectAsState()
-    var completed by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
-    LaunchedEffect(updateNotificationProcess.value) {
-        Log.d("TAG", "Greeting:${updateNotificationProcess.value} ")
-        updateNotificationProcess.value.apply {
-            if (this > 0) {
-                updateNotificationProgress(this)
-            }
-        }
-    }
     Column(
         modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
         Alignment.CenterHorizontally
@@ -63,7 +53,7 @@ fun Greeting(modifier: Modifier = Modifier) {
             Text(text = "Download")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        if (completed > 0) {
+        if (updateNotificationProcess.value > 0) {
             Image(
                 modifier = Modifier.size(100.dp),
                 painter = painterResource(id = R.drawable.done),
