@@ -1,7 +1,6 @@
 package com.example.downloadfiles.ui
 
 import android.content.Intent
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,23 +13,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.R
 import com.example.downloadfiles.createNotificationChannel
-import com.example.downloadfiles.updateNotificationProgress
 import com.example.service.DownloadService
 
 
@@ -44,6 +35,7 @@ fun Greeting(modifier: Modifier = Modifier,baseViewModel: BaseViewModel) {
     ) {
         Button(
             onClick = {
+                createNotificationChannel(context,"fdsfsfsfd")
                 val intent = Intent(context, DownloadService::class.java)
                 context.startService(intent)
             },
@@ -53,7 +45,7 @@ fun Greeting(modifier: Modifier = Modifier,baseViewModel: BaseViewModel) {
             Text(text = "Download")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        if (updateNotificationProcess.value > 0) {
+        if (updateNotificationProcess.value ==100) {
             Image(
                 modifier = Modifier.size(100.dp),
                 painter = painterResource(id = R.drawable.done),

@@ -2,22 +2,20 @@ package com.example.downloadfiles.network
 
 import android.os.Environment
 import android.util.Log
-import androidx.activity.viewModels
 import com.example.downloadfiles.BaseViewModel
-import kotlinx.coroutines.DelicateCoroutinesApi
+import com.example.downloadfiles.SharedDataHolder
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
-import javax.inject.Inject
 
-class DownloadFileR(private val baseViewModel: BaseViewModel){
-    @OptIn(DelicateCoroutinesApi::class)
-    fun downloadFile(completedDownload: (Int) -> Unit) {
-        GlobalScope.launch(Dispatchers.IO) {
+class DownloadFileR{
+    private var baseViewModel: BaseViewModel = SharedDataHolder.baseViewModel
+    fun downloadFile(completedDownload: (Int) -> Unit, progressTrack:(Int)->Unit) {
+       CoroutineScope(Dispatchers.IO).launch {
             try {
                 Log.d("TAasdasdsadsadG", "downloadFile: ")
                 val response = RetrofitClient.service.downloadFile("https://server8.mp3quran.net/harthi/014.mp3")
@@ -26,7 +24,7 @@ class DownloadFileR(private val baseViewModel: BaseViewModel){
                     val inputStream: InputStream = responseBody.byteStream()
                     val file = File(
                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                        "asd1546315.mp3"
+                        "sadad5165.mp3"
                     )
                     val outputStream = FileOutputStream(file)
 
@@ -37,6 +35,7 @@ class DownloadFileR(private val baseViewModel: BaseViewModel){
                     while (inputStream.read(buffer).also { bytes = it } != -1) {
                         byteCopied += bytes
                         val progress = (byteCopied.toFloat() / fileSize * 100).toInt()
+                        progressTrack(progress)
                         baseViewModel.updateNotificationProcess.update {
                             Log.d("TAGasdsddssd", "Greeting:$it} ")
                             progress
