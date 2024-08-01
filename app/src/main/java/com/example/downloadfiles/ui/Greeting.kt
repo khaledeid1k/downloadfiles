@@ -1,6 +1,9 @@
 package com.example.downloadfiles.ui
 
 import android.content.Intent
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +28,7 @@ import com.example.downloadfiles.createNotificationChannel
 import com.example.service.DownloadService
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Greeting(modifier: Modifier = Modifier,baseViewModel: BaseViewModel) {
     val updateNotificationProcess = baseViewModel.updateNotificationProcess.collectAsState()
@@ -35,9 +39,8 @@ fun Greeting(modifier: Modifier = Modifier,baseViewModel: BaseViewModel) {
     ) {
         Button(
             onClick = {
-                createNotificationChannel(context,"fdsfsfsfd")
                 val intent = Intent(context, DownloadService::class.java)
-                context.startService(intent)
+                context.startForegroundService(intent)
             },
             modifier = modifier
         ) {
