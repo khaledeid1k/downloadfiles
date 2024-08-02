@@ -17,8 +17,6 @@ import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.CUSTOM_ACTION
 import com.example.downloadfiles.CheckPermissions
 import com.example.downloadfiles.SharedDataHolder
-import com.example.downloadfiles.initNotificationChannel
-import com.example.downloadfiles.initNotificationManager
 import com.example.downloadfiles.ui.theme.DownloadfilesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,8 +26,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        initNotificationManager(this)
-        initNotificationChannel()
+        //initNotificationManager(this)
+        //initNotificationChannel()
 //        val receiver = AppRemovalReceiver()
 //        val filter = IntentFilter(CUSTOM_ACTION)
        // registerReceiver(receiver,filter, RECEIVER_NOT_EXPORTED)

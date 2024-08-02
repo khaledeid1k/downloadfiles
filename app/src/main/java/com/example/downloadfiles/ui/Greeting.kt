@@ -29,7 +29,6 @@ import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.CUSTOM_ACTION
 import com.example.downloadfiles.PROGRESS_EXTRA
 import com.example.downloadfiles.R
-import com.example.downloadfiles.createNotificationChannel
 import com.example.service.DownloadService
 
 
