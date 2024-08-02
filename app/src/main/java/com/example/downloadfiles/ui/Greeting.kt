@@ -1,6 +1,7 @@
 package com.example.downloadfiles.ui
 
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -22,7 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED
+import androidx.core.content.ContextCompat.registerReceiver
 import com.example.downloadfiles.BaseViewModel
+import com.example.downloadfiles.CUSTOM_ACTION
+import com.example.downloadfiles.PROGRESS_EXTRA
 import com.example.downloadfiles.R
 import com.example.downloadfiles.createNotificationChannel
 import com.example.service.DownloadService
@@ -30,7 +35,7 @@ import com.example.service.DownloadService
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Greeting(modifier: Modifier = Modifier,baseViewModel: BaseViewModel) {
+fun Greeting(modifier: Modifier = Modifier, baseViewModel: BaseViewModel) {
     val updateNotificationProcess = baseViewModel.updateNotificationProcess.collectAsState()
     val context = LocalContext.current
     Column(
@@ -39,8 +44,11 @@ fun Greeting(modifier: Modifier = Modifier,baseViewModel: BaseViewModel) {
     ) {
         Button(
             onClick = {
-                val intent = Intent(context, DownloadService::class.java)
-                context.startForegroundService(intent)
+//                val intentb =  Intent(CUSTOM_ACTION)
+//                intentb.putExtra(PROGRESS_EXTRA,20)
+//                context.sendBroadcast(intentb)
+                val intents = Intent(context, DownloadService::class.java)
+                context.startForegroundService(intents)
             },
             modifier = modifier
         ) {
@@ -48,7 +56,7 @@ fun Greeting(modifier: Modifier = Modifier,baseViewModel: BaseViewModel) {
             Text(text = "Download")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        if (updateNotificationProcess.value ==100) {
+        if (updateNotificationProcess.value == 100) {
             Image(
                 modifier = Modifier.size(100.dp),
                 painter = painterResource(id = R.drawable.done),

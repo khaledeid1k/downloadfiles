@@ -1,106 +1,64 @@
 package com.example.service
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Handler
 import android.util.Log
-import androidx.core.app.NotificationCompat
-import com.example.downloadfiles.CHANNEL_ID
-import com.example.downloadfiles.R
+import androidx.annotation.RequiresApi
+import com.example.downloadfiles.BaseViewModel
+import com.example.downloadfiles.CUSTOM_ACTION
+import com.example.downloadfiles.NOTIFICATION_ID
+import com.example.downloadfiles.PROGRESS_EXTRA
+import com.example.downloadfiles.SharedDataHolder
+import com.example.downloadfiles.createNotificationChannel
 import com.example.downloadfiles.network.DownloadFileR
+import com.example.downloadfiles.notifyNotification
+import com.example.downloadfiles.ui.AppRemovalReceiver
+import com.example.downloadfiles.updateNotificationProgress
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class DownloadService : Service() {
 
-    lateinit var notificationManager: NotificationManager
-    lateinit var builder: NotificationCompat.Builder
-    lateinit var handeler: Handler
-    var progress = 0
-
-    companion object {
-        const val NOTIFICATION_ID: Int = 2
-
-
-    }
-
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate() {
         super.onCreate()
-        notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        handeler = Handler()
-        initNotificationChannel()
-        startForeground(NOTIFICATION_ID, createNotification())
-        updatePreogress()
+        startForeground(NOTIFICATION_ID, createNotificationChannel(this, "dsdd"))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        updateProgress()
         return START_STICKY
     }
 
-    private fun initNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "channel_name"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance)
-            channel.setSound(null, null)
-            notificationManager.createNotificationChannel(channel)
 
-        }
-    }
-
-    private fun createNotification(): Notification {
-        builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.circle_notifications)
-            .setContentTitle("dsfdsfds")
-            .setContentText("textContent")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setProgress(100, progress, false)
-            .setSilent(true)
-
-        return builder.build()
-    }
-
-    private fun updateNotification() {
-        builder.setContentText("Dpwnloading").setProgress(100, progress, false)
-
-        notificationManager.notify(NOTIFICATION_ID, builder.build())
-    }
-
-    private fun updatePreogress() {
+    private fun updateProgress() {
         DownloadFileR().downloadFile(
-            progressTrack = {
-                progress=it
+            progressTrack = {progress->
+                Log.d("afsdfsdfsd", " updateProgress(progress: Int) : $progress")
+                updateNotificationProgress(progress)
+                notifyNotification()
+                if (progress <= 100) {
+                    stopForeground(true)
+                    stopSelf()
+                }
 
             }
         )
-    handeler.postDelayed( {
-        if (progress <= 100) {
-            updateNotification()
-            updatePreogress()
-        } else {
-            stopForeground(true)
-            stopSelf()
+
+
         }
-    },1000)
 
-//        DownloadFileR().downloadFile(
-//            progressTrack = {
-//                Log.d("afsdfsdfsd", "updatePreogress: $it")
-//                progress=it
-//                if (progress <= 100) {
-//                    updateNotification()
-//                    updatePreogress()
-//                } else {
-//                    stopForeground(true)
-//                    stopSelf()
-//                }
-//            }
-//        )
-
+    override fun onDestroy() {
+       // unregisterReceiver(appRemovalReceiver)
+        super.onDestroy()
     }
-
     override fun onBind(intent: Intent?) = null
 
 

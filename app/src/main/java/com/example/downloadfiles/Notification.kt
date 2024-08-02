@@ -1,5 +1,6 @@
 package com.example.downloadfiles
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -18,30 +19,35 @@ fun initNotificationManager(context: Context) {
 
 fun initNotificationChannel() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-    val name = "channel_name"
-    val importance = NotificationManager.IMPORTANCE_DEFAULT
-    val channel = NotificationChannel(CHANNEL_ID, name, importance)
+        val name = "channel_name"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(CHANNEL_ID, name, importance)
+        channel.setSound(null, null)
         notificationManager.createNotificationChannel(channel)
 
     }
 }
 
-fun createNotificationChannel(context: Context, textTitle: String) {
-        builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.circle_notifications)
-            .setContentTitle(textTitle)
-            .setContentText("textContent")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setProgress(100, 0, false)
-
-    notificationManager.notify(NOTIFICATION_ID, builder.build())
+fun createNotificationChannel(context: Context, textTitle: String): Notification {
+     builder = NotificationCompat.Builder(context, CHANNEL_ID)
+        .setSmallIcon(R.drawable.circle_notifications)
+        .setContentTitle(textTitle)
+        .setContentText("textContent")
+        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setProgress(100, 0, false)
+    return builder.build()
 }
 
-fun updateNotificationProgress( progress: Int) {
-        builder.setProgress(100, progress, false)
-            .also {
-            if(progress == 100){builder.setContentTitle("Download Complete")}
+fun updateNotificationProgress(progress: Int) {
+    builder.setProgress(100, progress, false)
+        .also {
+            if (progress == 100) {
+                builder.setContentTitle("Download Complete")
+            }
         }
+}
+
+fun notifyNotification() {
     notificationManager.notify(NOTIFICATION_ID, builder.build())
 }
 
