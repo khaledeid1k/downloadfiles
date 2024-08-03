@@ -32,7 +32,6 @@ import com.example.downloadfiles.R
 import com.example.service.DownloadService
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Greeting(modifier: Modifier = Modifier, baseViewModel: BaseViewModel) {
     val updateNotificationProcess = baseViewModel.updateNotificationProcess.collectAsState()
@@ -43,11 +42,10 @@ fun Greeting(modifier: Modifier = Modifier, baseViewModel: BaseViewModel) {
     ) {
         Button(
             onClick = {
-//                val intentb =  Intent(CUSTOM_ACTION)
-//                intentb.putExtra(PROGRESS_EXTRA,20)
-//                context.sendBroadcast(intentb)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val intents = Intent(context, DownloadService::class.java)
                 context.startForegroundService(intents)
+                }
             },
             modifier = modifier
         ) {

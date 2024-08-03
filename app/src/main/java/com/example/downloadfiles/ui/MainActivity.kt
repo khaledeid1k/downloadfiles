@@ -22,15 +22,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        //initNotificationManager(this)
-        //initNotificationChannel()
-//        val receiver = AppRemovalReceiver()
-//        val filter = IntentFilter(CUSTOM_ACTION)
-       // registerReceiver(receiver,filter, RECEIVER_NOT_EXPORTED)
         setContent {
             DownloadfilesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
