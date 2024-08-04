@@ -10,18 +10,12 @@ import android.os.Binder
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.R
-import com.example.downloadfiles.SharedDataHolder
 import com.example.downloadfiles.network.FileDownloader
-import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class DownloadService : Service() {
-
-    private var viewModel: BaseViewModel? = SharedDataHolder.baseViewModel
-
 
     companion object{
         const val CHANNEL_ID: String = "CHANNEL_ID"
@@ -29,43 +23,43 @@ class DownloadService : Service() {
         const val NOTIFICATION_ID: Int = 101
     }
 
-    private val binder: MyLoopServiceBinder by lazy {
-        MyLoopServiceBinder()
+    private val binder: LocalBinder by lazy {
+        LocalBinder()
     }
-
-    //@Inject
-    //lateinit var viewModel:BaseViewModel
-
-
     private lateinit var notificationManager: NotificationManager
     private lateinit var builder: NotificationCompat.Builder
 
+    private var progress: Int = 0
+    private val _progressState = MutableStateFlow(progress)
+    val progressState = _progressState.asStateFlow()
+
+    private fun startForegroundService() {
+        initNotificationManager(this)
+        initNotificationChannel()
+    }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate() {
         super.onCreate()
-        initNotificationManager(this)
-        initNotificationChannel()
-        startForeground(NOTIFICATION_ID, createNotificationChannel(this))
-        startDownload()
+        startForegroundService()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return START_STICKY
-    }
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int) = START_STICKY
 
 
-    private fun startDownload() {
-        FileDownloader().downloadFile ("llol5.mp3"){ progress ->
+    fun startDownload() {
+        startForeground(NOTIFICATION_ID, createNotification(this))
+
+        FileDownloader().downloadFile ("llol5.mp3"){
+            progress = it
+            _progressState.value = progress
             builder.setProgress(100, progress, false)
             builder.setContentTitle("$progress %")
             notificationManager.notify(NOTIFICATION_ID, builder.build())
-            //callback?.onResultReceived(progress)
-            viewModel?.updateProgress(progress)
         }
     }
 
-    override fun onBind(intent: Intent?) = null
+    override fun onBind(intent: Intent?) = binder
 
 
 
@@ -81,7 +75,7 @@ class DownloadService : Service() {
             notificationManager.createNotificationChannel(channel)
         }
     }
-    private fun createNotificationChannel(context: Context, textTitle: String = "Content Title"): Notification {
+    private fun createNotification(context: Context, textTitle: String = "Content Title"): Notification {
         builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.circle_notifications)
             .setContentTitle(textTitle)
@@ -92,17 +86,7 @@ class DownloadService : Service() {
     }
 
 
-    inner class MyLoopServiceBinder: Binder() {
+    inner class LocalBinder: Binder() {
         fun getService(): DownloadService = this@DownloadService
-    }
-
-    interface ServiceCallback {
-        fun onResultReceived(result: Int)
-    }
-
-    private var callback: ServiceCallback? = null
-
-    fun setCallback(callback: ServiceCallback) {
-        this.callback = callback
     }
 }
