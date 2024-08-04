@@ -13,7 +13,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 
 class FileDownloader{
-    private var baseViewModel: BaseViewModel = SharedDataHolder.baseViewModel
+    //private var baseViewModel: BaseViewModel = SharedDataHolder.baseViewModel
     fun downloadFile(fileName:String,progressTrack:(Int)->Unit) {
       CoroutineScope(Dispatchers.IO) .launch{
            try {
@@ -35,9 +35,7 @@ class FileDownloader{
                    while (inputStream.read(buffer).also { bytes = it } != -1) {
                        byteCopied += bytes
                        val progress = (byteCopied.toFloat() / fileSize * 100).toInt()
-                        baseViewModel.updateNotificationProcess.update {
-                            progress
-                        }
+                        //baseViewModel.updateNotificationProcess.update { progress }
 
                        outputStream.write(buffer, 0, bytes)
 

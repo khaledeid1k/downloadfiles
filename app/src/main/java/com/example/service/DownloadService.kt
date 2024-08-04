@@ -6,22 +6,40 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Binder
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.R
+import com.example.downloadfiles.SharedDataHolder
 import com.example.downloadfiles.network.FileDownloader
+import javax.inject.Inject
 
 class DownloadService : Service() {
+
+    private var viewModel: BaseViewModel? = SharedDataHolder.baseViewModel
+
+
     companion object{
         const val CHANNEL_ID: String = "CHANNEL_ID"
         const val CHANNEL_NAME: String = "CHANNEL_NAME"
         const val NOTIFICATION_ID: Int = 101
     }
 
+    private val binder: MyLoopServiceBinder by lazy {
+        MyLoopServiceBinder()
+    }
+
+    //@Inject
+    //lateinit var viewModel:BaseViewModel
+
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var builder: NotificationCompat.Builder
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate() {
@@ -38,10 +56,12 @@ class DownloadService : Service() {
 
 
     private fun startDownload() {
-        FileDownloader().downloadFile ("lol1.mp3"){ progress ->
+        FileDownloader().downloadFile ("llol5.mp3"){ progress ->
             builder.setProgress(100, progress, false)
             builder.setContentTitle("$progress %")
             notificationManager.notify(NOTIFICATION_ID, builder.build())
+            //callback?.onResultReceived(progress)
+            viewModel?.updateProgress(progress)
         }
     }
 
@@ -69,5 +89,20 @@ class DownloadService : Service() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setProgress(100, 0, false)
         return builder.build()
+    }
+
+
+    inner class MyLoopServiceBinder: Binder() {
+        fun getService(): DownloadService = this@DownloadService
+    }
+
+    interface ServiceCallback {
+        fun onResultReceived(result: Int)
+    }
+
+    private var callback: ServiceCallback? = null
+
+    fun setCallback(callback: ServiceCallback) {
+        this.callback = callback
     }
 }

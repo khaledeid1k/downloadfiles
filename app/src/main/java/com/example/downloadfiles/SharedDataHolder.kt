@@ -1,5 +1,9 @@
 package com.example.downloadfiles
 
+import android.app.Activity
+import androidx.compose.runtime.compositionLocalOf
+
 object SharedDataHolder {
-    lateinit var baseViewModel: BaseViewModel
+    val LocalActivity = compositionLocalOf<Activity> { error("no activity") }
+    var baseViewModel: BaseViewModel? = null
 }
