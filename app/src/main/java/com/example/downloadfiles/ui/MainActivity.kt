@@ -23,12 +23,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             DownloadfilesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
                     val baseViewModel: BaseViewModel = hiltViewModel()
                     SharedDataHolder.baseViewModel = baseViewModel
 
                     CheckPermissions(this)
 
-                    Greeting(modifier = Modifier.padding(innerPadding),baseViewModel)
+                    Greeting(modifier = Modifier.padding(innerPadding))
                 }
             }
         }

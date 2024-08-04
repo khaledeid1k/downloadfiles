@@ -29,17 +29,21 @@ import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.CUSTOM_ACTION
 import com.example.downloadfiles.PROGRESS_EXTRA
 import com.example.downloadfiles.R
+import com.example.downloadfiles.SharedDataHolder
 import com.example.service.DownloadService
 
 
 @Composable
-fun Greeting(modifier: Modifier = Modifier, baseViewModel: BaseViewModel) {
-    val updateNotificationProcess = baseViewModel.updateNotificationProcess.collectAsState()
+fun Greeting(modifier: Modifier = Modifier) {
+    val updateNotificationProcess = SharedDataHolder.baseViewModel.updateNotificationProcess.collectAsState()
     val context = LocalContext.current
     Column(
         modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
         Alignment.CenterHorizontally
     ) {
+
+        Log.d("ddddddddddddddddddddGreeting", "startDownload:${updateNotificationProcess.value} ")
+        Log.d("ddddddddddddddddddddGreeting", "SharedDataHolder:${ SharedDataHolder.baseViewModel} ")
         Button(
             onClick = {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
