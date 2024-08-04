@@ -8,7 +8,7 @@ import com.example.downloadfiles.ui.NotificationDownload.Companion.NOTIFICATION_
 
 class DownloadService : Service() {
 
-
+  //  private var baseViewModel: BaseViewModel = SharedDataHolder.baseViewModel
     private val notificationDownload =  NotificationDownload()
 
 
@@ -27,7 +27,11 @@ class DownloadService : Service() {
 
 
     private fun startDownload() {
-        FileDownloader().downloadFile("asdssssssssssddadww.mp3") { progress ->
+        FileDownloader().downloadFile("ssdddqas.mp3") { progress ->
+//            baseViewModel.updateNotificationProcess.update {
+//                progress
+//            }
+
             notificationDownload.builder.setProgress(100, progress, false)
             notificationDownload.builder.setContentTitle("$progress %")
             notificationDownload.notificationManager.notify(NOTIFICATION_ID,notificationDownload.builder.build())
