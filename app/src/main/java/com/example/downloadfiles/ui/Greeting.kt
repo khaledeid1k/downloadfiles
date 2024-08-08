@@ -47,9 +47,7 @@ fun Greeting(modifier: Modifier = Modifier) {
     var mBound by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current
-    //val updateNotificationProcess = mService.updateNotificationProcess.collectAsState()
     val updateNotificationProcess = remember { mutableIntStateOf(0) }
-   // val updateNotificationProcess = SharedDataHolder.baseViewModel.updateNotificationProcess.collectAsState()
     DisposableEffect(key1 = Unit) {
         val connection = object : ServiceConnection {
             override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -103,7 +101,7 @@ fun Greeting(modifier: Modifier = Modifier) {
             Text(text = "Download")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        if (updateNotificationProcess.value == 100) {
+        if (updateNotificationProcess.intValue == 100) {
             Image(
                 modifier = Modifier.size(100.dp),
                 painter = painterResource(id = R.drawable.done),
@@ -113,11 +111,11 @@ fun Greeting(modifier: Modifier = Modifier) {
             Box {
                 CircularProgressIndicator(
                     trackColor = androidx.compose.ui.graphics.Color.Red,
-                    progress = updateNotificationProcess.value.toFloat(),
+                    progress = updateNotificationProcess.intValue.toFloat(),
                     modifier = Modifier.size(100.dp)
                 )
                 Text(
-                    text = updateNotificationProcess.value.toString(),
+                    text = updateNotificationProcess.intValue.toString(),
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
