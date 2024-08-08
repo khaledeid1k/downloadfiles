@@ -15,7 +15,7 @@ class NotificationDownload {
     companion object {
         const val CHANNEL_ID: String = "CHANNEL_ID"
         const val CHANNEL_NAME: String = "CHANNEL_NAME"
-        const val NOTIFICATION_ID: Int = 101
+//        const val NOTIFICATION_ID: Int = 101
     }
     init {
 

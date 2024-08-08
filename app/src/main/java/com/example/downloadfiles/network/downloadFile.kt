@@ -5,16 +5,17 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.http.Url
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
 class FileDownloader{
-    fun downloadFile(fileName:String,progressTrack:(Int)->Unit) {
+    fun downloadFile(url: String,fileName:String,progressTrack:(Int)->Unit) {
       CoroutineScope(Dispatchers.IO) .launch{
            try {
                val response =
-                   RetrofitClient.service.downloadFile("https://server8.mp3quran.net/harthi/014.mp3")
+                   RetrofitClient.service.downloadFile(url)
                response.let { responseBody ->
                    val fileSize = responseBody.contentLength()
                    val inputStream: InputStream = responseBody.byteStream()
