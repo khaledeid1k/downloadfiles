@@ -12,12 +12,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,7 +61,7 @@ fun Greeting(modifier: Modifier = Modifier, viewModel: BaseViewModel = hiltViewM
     val serviceIntent = remember { Intent(context, DownloadService::class.java) }
     val connection = remember { TimerServiceConnection() }
     val service by connection.service.collectAsState()
-    val queueState by service?.queue?.collectAsState()?: remember {
+    val queue by service?.queueState?.collectAsState() ?: remember {
         mutableStateOf(emptyMap())
     }
     DisposableEffect(key1 = Unit) {
@@ -72,36 +75,26 @@ fun Greeting(modifier: Modifier = Modifier, viewModel: BaseViewModel = hiltViewM
         modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly,
         Alignment.CenterHorizontally
     ) {
-        Button(onClick = { viewModel.addOne() }) {
-            Text(text = "test")
-        }
-        Text(text = state.getOrDefault(0, -1).toString(), style = TextStyle(Color.Green))
-
-
-
         DownloadFile(
             context,
             "https://server8.mp3quran.net/harthi/014.mp3",
             1,
             service = service,
-            fileName = "hello",
-            queue =queueState
+            queue = queue
         )
         DownloadFile(
             context,
             "https://server8.mp3quran.net/harthi/014.mp3",
             2,
             service = service,
-            fileName = "happy",
-            queue =queueState
+            queue = queue
         )
         DownloadFile(
             context,
             "https://server8.mp3quran.net/harthi/014.mp3",
             3,
             service = service,
-            fileName = "sad",
-            queue =queueState
+            queue = queue
         )
 
 
@@ -116,49 +109,39 @@ fun DownloadFile(
     url: String,
     nationalId: Int,
     service: DownloadService?,
-    fileName: String,
     queue: Map<Int, Int>
-
 ) {
-
-    val progress = remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(key1 = queue) {
-        Log.d("messi", "DownloadFile: Queue size is ${queue.size}")
-    }
-    Button(
-        onClick = {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val intents = Intent(context, DownloadService::class.java)
-                context.startForegroundService(intents)
-                service?.startDownload(fileName, url, nationalId)
-
-            }
-        },
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-
-        Text(text = "Download")
-    }
-    Spacer(modifier = Modifier.height(16.dp))
-    if (progress.intValue == 100) {
-        Image(
-            modifier = Modifier.size(100.dp),
-            painter = painterResource(id = R.drawable.done),
-            contentDescription = ""
-        )
-    } else {
         Box {
             CircularProgressIndicator(
-                trackColor = Color.Red,
-                progress = queue.getOrDefault(nationalId,0).toFloat(),
+                trackColor = Color.Gray,
+                progress = queue.getOrDefault(nationalId, 0).toFloat(),
                 modifier = Modifier.size(100.dp)
             )
             Text(
-                text = queue.getOrDefault(nationalId,0).toString(),
+                text = queue.getOrDefault(nationalId, 0).toString(),
                 modifier = Modifier.align(Alignment.Center)
             )
         }
+        Button(
+            onClick = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    if (!queue.containsKey(nationalId)) {
+                        val intents = Intent(context, DownloadService::class.java)
+                        context.startForegroundService(intents)
+                        service?.startDownload("hgvhgvhghvh", url, nationalId)
+                    }
+                }
+            },
+        ) {
+            Text(text = "Download")
+        }
     }
+
 }
 
 class TimerServiceConnection : ServiceConnection {

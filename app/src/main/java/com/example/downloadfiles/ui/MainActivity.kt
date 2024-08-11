@@ -29,68 +29,14 @@ import kotlinx.coroutines.flow.update
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-
-//    private lateinit var mService: DownloadService
-//    private var mBound: Boolean = false
-//    private val connection = object : ServiceConnection {
-//        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-//            val binder = service as DownloadService.LocalBinder
-//            mService = binder.getService()
-//            mBound = true
-//        }
-//
-//        override fun onServiceDisconnected(arg0: ComponentName) {
-//            mBound = false
-//        }
-//    }
-
-    override fun onStart() {
-        super.onStart()
-//        // Bind to LocalService.
-//        Intent(this, DownloadService::class.java).also { intent ->
-//            bindService(intent, connection, Context.BIND_AUTO_CREATE)
-//        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        unbindService(connection)
-//        mBound = false
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
         enableEdgeToEdge()
         setContent {
             DownloadfilesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val baseViewModel: BaseViewModel = hiltViewModel()
-                    SharedDataHolder.baseViewModel = baseViewModel
-//                    if (mBound) {
-//                        Log.d("TAG", "15641561561561561tttttt: ${ mService.updateNotificationProcess.collectAsState()} , $mService")
-//
-////                        baseViewModel.updateNotificationProcess.update {
-////
-////                           0
-////                        }
-//
-//
-//                    }else{
-//                        Log.d("TAG", "sssssssssasdsssss: 0000000000000000000$connection")
-//
-//                    }
-
-
-
                     CheckPermissions(this)
-
                     Greeting(modifier = Modifier.padding(innerPadding))
-
                 }
             }
         }
