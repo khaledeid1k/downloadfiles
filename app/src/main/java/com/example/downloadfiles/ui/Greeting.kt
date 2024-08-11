@@ -1,5 +1,6 @@
 package com.example.downloadfiles.ui
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -32,110 +33,105 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
+import com.example.downloadfiles.BaseViewModel
 import com.example.downloadfiles.R
 import com.example.downloadfiles.SharedDataHolder
 import com.example.service.DownloadService
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Preview
 @Composable
-fun Greeting(modifier: Modifier = Modifier) {
-    var mService by remember { mutableStateOf<DownloadService?>(null) }
-    var mBound by remember { mutableStateOf(false) }
+fun Greeting(modifier: Modifier = Modifier, viewModel: BaseViewModel = hiltViewModel()) {
+    val state by viewModel.state.collectAsState()
     val context = LocalContext.current
+    val serviceIntent = remember { Intent(context, DownloadService::class.java) }
+    val connection = remember { TimerServiceConnection() }
+    val service by connection.service.collectAsState()
+    val queueState by service?.queue?.collectAsState()?: remember {
+        mutableStateOf(emptyMap())
+    }
     DisposableEffect(key1 = Unit) {
-        val connection = object : ServiceConnection {
-            override fun onServiceConnected(className: ComponentName, service: IBinder) {
-                val binder = service as DownloadService.LocalBinder
-                mService = binder.getService()
-                mBound = true
-            }
-
-            override fun onServiceDisconnected(arg0: ComponentName) {
-                mBound = false
-            }
-        }
-        Intent(context, DownloadService::class.java).also { intent ->
-            context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
-        }
-
+        context.bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
         onDispose {
             context.unbindService(connection)
-            mBound = false
         }
     }
+
     Column(
         modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly,
         Alignment.CenterHorizontally
     ) {
+        Button(onClick = { viewModel.addOne() }) {
+            Text(text = "test")
+        }
+        Text(text = state.getOrDefault(0, -1).toString(), style = TextStyle(Color.Green))
+
+
+
         DownloadFile(
             context,
             "https://server8.mp3quran.net/harthi/014.mp3",
             1,
-            mService=mService,
-            mBound=mBound
-        ) { url, nationalId ->
-            mService?.startDownload("45AD1q", url, nationalId)
-        }
+            service = service,
+            fileName = "hello",
+            queue =queueState
+        )
         DownloadFile(
             context,
             "https://server8.mp3quran.net/harthi/014.mp3",
             2,
-            mService=mService,
-            mBound=mBound
-        ) { url, nationalId ->
-            mService?.startDownload("45AD2q", url, nationalId)
-        }
+            service = service,
+            fileName = "happy",
+            queue =queueState
+        )
         DownloadFile(
             context,
             "https://server8.mp3quran.net/harthi/014.mp3",
             3,
-            mService=mService,
-            mBound=mBound
-        ) { url, nationalId ->
-            mService?.startDownload("45AD3q", url, nationalId)
-        }
-
+            service = service,
+            fileName = "sad",
+            queue =queueState
+        )
 
 
     }
 
 }
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun DownloadFile(
     context: Context,
     url: String,
     nationalId: Int,
-    mService: DownloadService?,
-    mBound: Boolean,
-    startDownload: (String, Int) -> Unit,
+    service: DownloadService?,
+    fileName: String,
+    queue: Map<Int, Int>
 
 ) {
-    val progress = remember { mutableIntStateOf (0) }
-    LaunchedEffect(key1 = mService?.stateFlows) {
-        if (mBound) {
-            mService?.updateNotificationProcess?.collectLatest {
-                mService.stateFlows[nationalId]?.collectLatest {
-                    progress.intValue=it
-                }
-            }
-        }
 
+    val progress = remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(key1 = queue) {
+        Log.d("messi", "DownloadFile: Queue size is ${queue.size}")
     }
     Button(
         onClick = {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val intents = Intent(context, DownloadService::class.java)
                 context.startForegroundService(intents)
-                startDownload(url, nationalId)
+                service?.startDownload(fileName, url, nationalId)
 
             }
         },
@@ -153,15 +149,28 @@ fun DownloadFile(
     } else {
         Box {
             CircularProgressIndicator(
-                trackColor = androidx.compose.ui.graphics.Color.Red,
-                progress = progress.intValue .toFloat(),
+                trackColor = Color.Red,
+                progress = queue.getOrDefault(nationalId,0).toFloat(),
                 modifier = Modifier.size(100.dp)
             )
             Text(
-                text = progress.intValue.toString(),
+                text = queue.getOrDefault(nationalId,0).toString(),
                 modifier = Modifier.align(Alignment.Center)
             )
         }
+    }
+}
+
+class TimerServiceConnection : ServiceConnection {
+    private var _service = MutableStateFlow<DownloadService?>(null)
+    var service = _service.asStateFlow()
+
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+        this._service.value = (service as DownloadService.LocalBinder).getService()
+    }
+
+    override fun onServiceDisconnected(name: ComponentName?) {
+        _service.value = null
     }
 }
 

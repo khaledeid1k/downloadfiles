@@ -41,7 +41,7 @@ class NotificationDownload {
         builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.circle_notifications)
             .setContentTitle(textTitle)
-            .setContentText("0 %")
+            .setContentText("downloading...")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setProgress(100, 0, false)
         return builder.build()
